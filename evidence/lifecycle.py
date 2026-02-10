@@ -1,0 +1,8 @@
+
+from enum import Enum
+
+
+class EvidenceState(str, Enum):
+    RAW_ACCEPTED = "RAW_ACCEPTED"
+    QUARANTINED_LOW_INTEGRITY = "QUARANTINED_LOW_INTEGRITY"
+    QUARANTINED_POLICY = "QUARANTINED_POLICY"

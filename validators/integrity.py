@@ -1,4 +1,3 @@
-
 import math
 from collections import Counter
 from typing import Dict, List
@@ -7,7 +6,7 @@ from typing import Dict, List
 class IntegrityResult:
     """
     Deterministic integrity assessment.
-    This object is attached as metadata, never mutates evidence.
+    Attached as metadata, never mutates evidence.
     """
 
     def __init__(
@@ -55,9 +54,7 @@ class IntegrityEvaluator:
         metrics["byte_length"] = length
 
         if length == 0:
-            return IntegrityEvaluator._fail(
-                "empty_content", metrics
-            )
+            return IntegrityEvaluator._fail("empty_content", metrics)
 
         entropy = IntegrityEvaluator._shannon_entropy(raw)
         metrics["entropy"] = entropy
@@ -111,9 +108,6 @@ class IntegrityEvaluator:
 
     @staticmethod
     def _shannon_entropy(data: bytes) -> float:
-        """
-        Bits per byte.
-        """
         counts = Counter(data)
         total = len(data)
 
@@ -126,9 +120,6 @@ class IntegrityEvaluator:
 
     @staticmethod
     def _repetition_ratio(data: bytes) -> float:
-        """
-        Measures dominance of most common byte.
-        """
         counts = Counter(data)
         most_common = counts.most_common(1)[0][1]
         return most_common / len(data)
@@ -136,3 +127,43 @@ class IntegrityEvaluator:
     @staticmethod
     def _unique_byte_ratio(data: bytes) -> float:
         return len(set(data)) / len(data)
+
+    @staticmethod
+    def _compose_score(
+        entropy: float,
+        repetition_ratio: float,
+        unique_ratio: float,
+    ) -> float:
+        """
+        Combines metrics into a bounded [0,1] integrity score.
+        """
+
+        # --- entropy normalization ---
+        min_e, max_e = IntegrityEvaluator.ENTROPY_RANGE
+        if entropy < min_e:
+            entropy_score = entropy / min_e
+        elif entropy > max_e:
+            entropy_score = max(0.0, 1 - (entropy - max_e) / max_e)
+        else:
+            entropy_score = 1.0
+
+        entropy_score = max(0.0, min(1.0, entropy_score))
+
+        # --- repetition penalty ---
+        repetition_score = max(
+            0.0, 1.0 - (repetition_ratio / IntegrityEvaluator.MAX_REPETITION_RATIO)
+        )
+
+        # --- uniqueness normalization ---
+        unique_score = min(
+            1.0, unique_ratio / IntegrityEvaluator.MIN_UNIQUE_RATIO
+        )
+
+        # --- weighted sum ---
+        score = (
+            0.4 * entropy_score
+            + 0.4 * repetition_score
+            + 0.2 * unique_score
+        )
+
+        return round(max(0.0, min(1.0, score)), 4)

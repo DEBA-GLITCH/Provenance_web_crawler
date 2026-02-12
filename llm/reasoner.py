@@ -4,6 +4,8 @@ from typing import List
 from retrieval.context_block import ContextBlock
 from llm.groq_client import call_llm
 from llm.schema import ANSWER_SCHEMA_DESCRIPTION
+from llm.verifier import verify_claims
+
 
 
 def build_prompt(query: str, blocks: List[ContextBlock]) -> tuple[str, str]:
@@ -16,7 +18,7 @@ def build_prompt(query: str, blocks: List[ContextBlock]) -> tuple[str, str]:
     for b in blocks:
         context_payload.append({
             "chunk_id": b.chunk_id,
-            "evidence_id": b.evidence_id,
+            "evidence_id": b.evidence_id, 
             "source_url": b.source_url,
             "text": b.chunk_text,
         })
@@ -32,9 +34,6 @@ def build_prompt(query: str, blocks: List[ContextBlock]) -> tuple[str, str]:
 
 
 def grounded_reason(query: str, blocks: List[ContextBlock]) -> dict:
-    """
-    Executes GROQ reasoning with strict schema.
-    """
 
     if not blocks:
         return {
@@ -44,10 +43,7 @@ def grounded_reason(query: str, blocks: List[ContextBlock]) -> dict:
 
     system_prompt, user_prompt = build_prompt(query, blocks)
 
-    result = call_llm(system_prompt, user_prompt)
+    raw_result = call_llm(system_prompt, user_prompt)
 
-    # basic structure validation
-    if "answer" not in result or "claims" not in result:
-        raise ValueError("Invalid LLM schema")
+    return verify_claims(raw_result, blocks)
 
-    return result

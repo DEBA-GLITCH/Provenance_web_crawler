@@ -1,6 +1,7 @@
 # orchestrator/research_agent.py
 
 from typing import Set, Dict, List
+
 from orchestrator.goal_state import GoalState
 from orchestrator.planner import plan_next_action
 from orchestrator.action_types import ActionType
@@ -8,6 +9,7 @@ from tools.crawl.fetch_page import fetch_page
 from orchestrator.failure_event import FailureEvent
 from retrieval.retriever import retrieve_context
 from llm.reasoner import grounded_reason
+from tools.search.duckduckgo_search import search_duckduckgo
 
 
 class ResearchAgent:
@@ -27,17 +29,18 @@ class ResearchAgent:
 
         self.state = GoalState(
             goal=goal,
-            requirements=[goal],  # placeholder ECC
+            requirements=[goal],  # Placeholder ECC (expand later)
         )
 
-        # --- Active Constraint Layer ---
+        # --- Constraint Layer ---
         self.visited_urls: Set[str] = set()
         self.previous_queries: Set[str] = set()
         self.last_actions: List[str] = []
         self.no_progress_steps = 0
+        self.reason_attempted = False
 
     # --------------------------------------------------
-    # State Map for Planner
+    # Build Planner State Map (No Raw Text)
     # --------------------------------------------------
 
     def build_state_map(self) -> Dict:
@@ -52,27 +55,35 @@ class ResearchAgent:
         }
 
     # --------------------------------------------------
-    # SEARCH (Stub: integrate your real search tool here)
+    # SEARCH
     # --------------------------------------------------
 
     def execute_search(self, query: str):
 
         normalized = query.strip().lower()
 
+        if not normalized:
+            return
+
         if normalized in self.previous_queries:
             print("⚠️ Duplicate query blocked")
+            self.no_progress_steps += 1
             return
 
         self.previous_queries.add(normalized)
 
         print(f"🔎 SEARCH: {query}")
 
-        # TODO: Replace with real search tool
-        # For now, fake URL generation
-        fake_url = f"https://example.com/search?q={normalized.replace(' ', '+')}"
+        urls = search_duckduckgo(query, max_results=5)
 
-        # Automatically push into FETCH queue
-        self.execute_fetch(fake_url)
+        if not urls:
+            print("⚠️ No search results")
+            self.no_progress_steps += 1
+            return
+
+        # Progressive fetch: first 2 results
+        for url in urls[:2]:
+            self.execute_fetch(url)
 
     # --------------------------------------------------
     # FETCH
@@ -80,8 +91,12 @@ class ResearchAgent:
 
     def execute_fetch(self, url: str):
 
+        if not url:
+            return
+
         if url in self.visited_urls:
             print("⚠️ URL already visited, blocked")
+            self.no_progress_steps += 1
             return
 
         self.visited_urls.add(url)
@@ -92,6 +107,7 @@ class ResearchAgent:
 
         if isinstance(result, FailureEvent):
             print("❌ Fetch failed:", result.message)
+            self.no_progress_steps += 1
             return
 
         evidence_id = self.evidence.write(result)
@@ -99,11 +115,13 @@ class ResearchAgent:
 
         print("✅ Evidence stored:", evidence_id)
 
-        # Minimal evidence summary for planner
         self.state.evidence_summary.append({
             "evidence_id": evidence_id,
             "source_url": url,
         })
+
+        # Progress made
+        self.no_progress_steps = 0
 
     # --------------------------------------------------
     # REASON
@@ -119,28 +137,32 @@ class ResearchAgent:
         )
 
         if not blocks:
-            print("⚠️ No usable context found")
+            print("⚠️ No usable context")
             self.no_progress_steps += 1
             return
 
         result = grounded_reason(self.state.goal, blocks)
 
-        if result["confidence"] > 0.75:
-            print("🎯 Goal satisfied with confidence:", result["confidence"])
+        confidence = result.get("confidence", 0.0)
+
+        if confidence > 0.75:
+            print("🎯 Goal satisfied with confidence:", confidence)
             self.state.covered_requirements = self.state.requirements.copy()
             self.state.halted = True
             self.state.halt_reason = "GOAL_SATISFIED"
         else:
-            print("⚠️ Insufficient confidence:", result["confidence"])
+            print("⚠️ Insufficient confidence:", confidence)
             self.no_progress_steps += 1
+
+        self.reason_attempted = True
 
     # --------------------------------------------------
     # Stagnation Detection
     # --------------------------------------------------
 
     def check_stagnation(self):
-
         if self.no_progress_steps >= 3:
+            print("⚠️ Stagnation detected")
             self.state.halted = True
             self.state.halt_reason = "STAGNATION_DETECTED"
 
@@ -155,6 +177,7 @@ class ResearchAgent:
 
         while not self.state.halted:
 
+            # Hard ceiling
             if self.state.should_force_halt():
                 self.state.halted = True
                 self.state.halt_reason = "MAX_STEPS_REACHED"
@@ -162,15 +185,28 @@ class ResearchAgent:
 
             state_map = self.build_state_map()
 
-            decision = plan_next_action(state_map)
+            # --------------------------------------------------
+            # Enforcement Rule:
+            # If evidence exists and reasoning not attempted,
+            # force one REASON before planner can HALT.
+            # --------------------------------------------------
 
-            try:
-                action = ActionType(decision["action"])
-            except Exception:
-                print("❌ Invalid planner action")
-                self.state.halted = True
-                self.state.halt_reason = "INVALID_PLANNER_ACTION"
-                break
+            if (
+                len(self.state.evidence_summary) > 0
+                and not self.reason_attempted
+            ):
+                action = ActionType.REASON
+                print("🔒 Enforcing mandatory reasoning pass")
+            else:
+                decision = plan_next_action(state_map)
+
+                try:
+                    action = ActionType(decision["action"])
+                except Exception:
+                    print("❌ Invalid planner action")
+                    self.state.halted = True
+                    self.state.halt_reason = "INVALID_PLANNER_ACTION"
+                    break
 
             self.last_actions.append(action.value)
 

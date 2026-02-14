@@ -1,0 +1,31 @@
+{
+  "body_sha256": "f3d86facb7a26b5e5d5c2af640fca9fe6228f32489b0a07cd1eadbceedd56adc",
+  "body_size": 115521,
+  "headers": {
+    "CF-Cache-Status": "DYNAMIC",
+    "CF-RAY": "9cdd8a373c05d593-AMS",
+    "Cache-Control": "public, max-age=0, must-revalidate",
+    "Connection": "close",
+    "Content-Encoding": "zstd",
+    "Content-Type": "text/html; charset=utf-8",
+    "Date": "Sat, 14 Feb 2026 15:18:45 GMT",
+    "Link": "</_next/static/media/6bd983bd58a87a3d-s.p.cf80dd39.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/8e9d1a1dbcc3c9ea-s.p.cfbfb1b2.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/b4e85636e2ca4056-s.p.9ecc21d7.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\"",
+    "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+    "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=MzISgzox4TBJqpQTW8BwJ%2FdN2SO%2B60VpUWe%2BRb7T7PhwGAfkM0N0QOMTWicS%2ByHrrB4bQF6g5xoOq7%2BG5qnBEm3%2Bxu7UWsSv6AHmCJqlxYdAd6NiXTQ%3D\"}]}",
+    "Server": "cloudflare",
+    "Server-Timing": "cfCacheStatus;desc=\"DYNAMIC\", cfEdge;dur=185,cfOrigin;dur=0",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+    "Transfer-Encoding": "chunked",
+    "Vary": "Accept-Encoding, rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding",
+    "alt-svc": "h3=\":443\"; ma=86400",
+    "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://vercel.live https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://challenges.cloudflare.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.googletagmanager.com https://stats.g.doubleclick.net https://www.google.com https://vercel.live https://api.aihola.com https://aihola-production.up.railway.app https://cloudflareinsights.com; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests",
+    "permissions-policy": "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "SAMEORIGIN",
+    "x-powered-by": "Next.js",
+    "x-xss-protection": "1; mode=block"
+  },
+  "status": 200,
+  "url": "https://aihola.com/article/openai-20-billion-revenue-compute-2025"
+}

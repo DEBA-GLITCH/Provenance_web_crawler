@@ -1,0 +1,23 @@
+{
+  "body_sha256": "5cf66da3ae486231c1344d57e0fcce44c7867f83497a4195e56aed31b5540da1",
+  "body_size": 221600,
+  "headers": {
+    "Age": "502006",
+    "Cache-Control": "public, max-age=0, must-revalidate",
+    "Connection": "close",
+    "Content-Encoding": "br",
+    "Content-Type": "text/html; charset=utf-8",
+    "Date": "Sun, 08 Feb 2026 19:52:13 GMT",
+    "Etag": "W/\"fh4e1jhhl24qzf\"",
+    "Server": "Vercel",
+    "Strict-Transport-Security": "max-age=63072000",
+    "Transfer-Encoding": "chunked",
+    "X-Matched-Path": "/stats/[slug]",
+    "X-Nextjs-Matched-Path": "/stats/[slug]",
+    "X-Powered-By": "Next.js",
+    "X-Vercel-Cache": "HIT",
+    "X-Vercel-Id": "bom1::iad1::jx72h-1771082339329-d45b4fd92050"
+  },
+  "status": 200,
+  "url": "https://taptwicedigital.com/stats/openai"
+}

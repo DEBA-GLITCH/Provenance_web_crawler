@@ -1,0 +1,31 @@
+{
+  "body_sha256": "8da8465ba108fd4c8d311df1c47eade276f1ac541979244da68854d621ff37fc",
+  "body_size": 483702,
+  "headers": {
+    "CF-RAY": "9cdd8a037cc70be0-AMS",
+    "Cache-Control": "max-age=10",
+    "Connection": "close",
+    "Content-Encoding": "zstd",
+    "Content-Type": "text/html",
+    "Date": "Sat, 14 Feb 2026 15:18:37 GMT",
+    "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+    "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=GyaieUrhQ1KxMvNLW9tbbCLmoCeqDC83cU7EF17zU87ZQ6FsSLdNycpsphG5VXq66rN5eghdF3P%2BtzjQv45cgbs0PeyIWvkM9jjHk0EWTTomJlw%2FEOOGgXABnQ%3D%3D\"}]}",
+    "Server": "cloudflare",
+    "Server-Timing": "cfCacheStatus;desc=\"DYNAMIC\", cfEdge;dur=16,cfOrigin;dur=220",
+    "Transfer-Encoding": "chunked",
+    "alt-svc": "h3=\":443\"; ma=86400",
+    "cf-cache-status": "DYNAMIC",
+    "expires": "Sat, 14 Feb 2026 15:18:47 GMT",
+    "last-modified": "Fri, 13 Feb 2026 16:00:50 GMT",
+    "x-goog-generation": "1770998450262859",
+    "x-goog-hash": "crc32c=50d5qg==, md5=1Tb0X2rkHxkggv7eSE0zuw==",
+    "x-goog-meta-goog-reserved-file-mtime": "1770998422",
+    "x-goog-metageneration": "1",
+    "x-goog-storage-class": "STANDARD",
+    "x-goog-stored-content-encoding": "identity",
+    "x-goog-stored-content-length": "482047",
+    "x-guploader-uploadid": "AJRbA5X__ZNSB7X0WuDyWFTeYhhi6ntn_rt7mJpoTqWQ7GzS_NUChONxMa650YXfjWa5nsXIaKJ9d-g"
+  },
+  "status": 200,
+  "url": "https://futuresearch.ai/openai-revenue-forecast/"
+}

@@ -1,2 +1,16 @@
-.env
+# Python
 __pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+.env.local
+
+# Evidence data
+evidence_data/
+
+# OS specific
+.DS_Store
+.vscode/
+.idea/

@@ -8,7 +8,7 @@ from groq import Groq
 load_dotenv()
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-GROQ_MODEL = os.getenv("GROQ_MODEL", "qwen/qwen3-32b")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "mixtral-8x7b-32768")
 
 if not GROQ_API_KEY:
     raise RuntimeError("GROQ_API_KEY not found in .env")
@@ -35,6 +35,11 @@ def call_llm(system_prompt: str, user_prompt: str) -> dict:
     content = response.choices[0].message.content
 
     try:
+        if not content:
+            raise ValueError("LLM returned empty content")
+            
         return json.loads(content)
-    except json.JSONDecodeError:
-        raise ValueError("LLM returned invalid JSON")
+    except (json.JSONDecodeError, TypeError) as e:
+        print(f"❌ LLM JSON Error: {e}")
+        # Return a safe fallback to prevent crash
+        return {"error": "Invalid JSON from LLM", "raw": content}

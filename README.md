@@ -67,6 +67,20 @@ The agent will print its thought process in real-time:
 
 Evidence data is stored locally in `evidence_data/` for auditing.
 
+## 🐳 Docker Support
+
+You can also run the agent using Docker.
+
+1.  **Build the image**:
+    ```bash
+    docker build -t provenance-agent .
+    ```
+
+2.  **Run the container**:
+    ```bash
+    docker run --env-file .env -v $(pwd)/evidence_data:/app/evidence_data provenance-agent --goal "Your research goal"
+    ```
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please follow these steps:

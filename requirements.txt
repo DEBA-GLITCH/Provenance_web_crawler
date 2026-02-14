@@ -5,3 +5,5 @@ requests
 duckduckgo-search>=5.0.0
 lxml
 termcolor
+readability-lxml
+

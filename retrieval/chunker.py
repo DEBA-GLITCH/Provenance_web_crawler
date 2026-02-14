@@ -17,6 +17,19 @@ def deterministic_chunk(text: str) -> List[str]:
     current = ""
 
     for para in paragraphs:
+        # Handle oversized paragraphs
+        if len(para) > MAX_CHUNK_CHARS:
+            # If current has content, flush it first
+            if current:
+                chunks.append(current.strip())
+                current = ""
+            
+            # Split big paragraph into hard chunks
+            for i in range(0, len(para), MAX_CHUNK_CHARS):
+                chunks.append(para[i:i + MAX_CHUNK_CHARS])
+            
+            continue
+
         if len(current) + len(para) <= MAX_CHUNK_CHARS:
             current += para + "\n\n"
         else:

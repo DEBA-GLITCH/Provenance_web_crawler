@@ -4,6 +4,7 @@ import json
 from typing import List
 from retrieval.context_block import ContextBlock
 from retrieval.chunker import deterministic_chunk, chunk_id
+from retrieval.html_cleaner import extract_main_content
 
 
 MAX_CONTEXT_BLOCKS = 5
@@ -54,7 +55,12 @@ def retrieve_context(
         meta = _load_metadata(meta_path, evidence_id)
         raw = _load_blob(blob_path, evidence_id)
 
-        text = raw.decode("utf-8", errors="ignore")
+        # Try to clean HTML first
+        text = extract_main_content(raw)
+        
+        # Fallback to raw text if cleaning fails or returns empty
+        if not text:
+            text = raw.decode("utf-8", errors="ignore")
 
         chunks = deterministic_chunk(text)
 
